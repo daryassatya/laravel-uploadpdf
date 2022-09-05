@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MahasiswaController extends Controller
 {
@@ -41,6 +42,35 @@ class MahasiswaController extends Controller
     public function store(Request $request)
     {
         //
+
+        $request->validate([
+            'nama' => 'required|max:255',
+            'tgl_lahir' => 'required|date',
+            'program_studi' => 'required|max:255',
+            'nim' => 'required|max:255',
+            'alamat' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+        ]);
+        // ddd($request);
+
+        try {
+            //code...
+
+            $mahasiswa = new Mahasiswa();
+            $mahasiswa->nama = $request->nama;
+            $mahasiswa->tgl_lahir = $request->tgl_lahir;
+            $mahasiswa->nim = $request->nim;
+            $mahasiswa->program_studi = $request->program_studi;
+            $mahasiswa->alamat = $request->alamat;
+            $mahasiswa->foto = $request->file('image')->store('foto-mahasiswa');
+            $mahasiswa->save();
+
+            return redirect()->route('dashboard.mahasiswa.index')->with(['success' => 'Mahasiswa added successfully!']);
+
+        } catch (\Throwable$th) {
+            //throw $th;
+            return redirect()->route('dashboard.mahasiswa.index')->with(['failed' => $th->getMessage()]);
+        }
     }
 
     /**
@@ -83,8 +113,18 @@ class MahasiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($nim)
     {
-        //
+        try {
+            $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+            if ($mahasiswa->foto) {
+                Storage::delete($mahasiswa->foto);
+            }
+
+            Mahasiswa::destroy($mahasiswa->id);
+            return redirect()->route('dashboard.mahasiswa.index')->with(['success' => "Mahasiswa $mahasiswa->nama has been deleted!"]);
+        } catch (\Throwable$th) {
+            return redirect()->back()->with(['failed' => $th->getMessage()]);
+        }
     }
 }

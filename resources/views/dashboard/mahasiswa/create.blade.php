@@ -1,7 +1,7 @@
 @extends('dashboard.layouts.main')
 @section('container')
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1>Create New Post</h1>
+        <h1>Create New Mahasiswa</h1>
     </div>
 
     @if (session()->has('failed'))
@@ -11,7 +11,7 @@
         </div>
     @endif
 
-    <form method="post" action="{{ route('dashboard.posts.store') }}" enctype="multipart/form-data">
+    <form method="post" action="{{ route('dashboard.mahasiswa.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="col-lg-8 mb-5">
             <div class="mb-3">
@@ -56,10 +56,10 @@
                 @enderror
             </div>
             <div class="mb-3">
-                <label for="tgl_lahir" class="form-label">Tanggal Lahir</label>
-                <input type="text" class="form-control @error('tgl_lahir') is-invalid @enderror" id="tgl_lahir"
-                    name="tgl_lahir" value="{{ old('tgl_lahir') }}" required>
-                @error('tgl_lahir')
+                <label for="nim" class="form-label">NIM</label>
+                <input type="text" class="form-control @error('nim') is-invalid @enderror" id="nim" name="nim"
+                    value="{{ old('nim') }}" required>
+                @error('nim')
                     <div class="invalid-feedback">
                         {{ $message }}
                     </div>
@@ -83,7 +83,7 @@
             </div> --}}
             <div class="mb-3">
                 <label for="alamat" class="form-label">Alamat</label>
-                <textarea class="form-control @error('alamat') is-invalid @enderror" id="alamat" rows="3" required>{{ old('alamat') }}</textarea>
+                <textarea rows="3" class="form-control" placeholder="Alamat.." name="alamat">{{ old('alamat') }}</textarea>
                 @error('alamat')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -91,7 +91,7 @@
                 @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary">Create Post</button>
+            <button type="submit" class="btn btn-primary">Create</button>
         </div>
     </form>
 @endsection
