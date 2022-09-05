@@ -1,0 +1,32 @@
+--- Url Back ---
+Use return redirect()->back(); in a Controller and use {{ url()->previous() }} in .blade.php View Files
+
+----- Mengambil Url -----
+
+$route = Route::current()->getName();
+$route = URL::current();
+$route = Request::url()
+$route = request()->segment(1);
+
+
+----- Pengkondisian -----
+
+Cara1
+@if(Request::url() === 'your url here')
+    // code
+@endif
+
+Cara2
+@if(Route::current()->getName() === 'your url here')
+    // code
+@endif
+
+Cara3
+@if(Request::is('dashboard/index'))
+    // code
+@endif
+
+Cara4
+@if(request()->segment(1) === 'posts')
+    // code
+@endif
