@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardPostController;
+use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PostController;
 use App\Models\Category;
 use App\Models\User;
@@ -115,26 +116,15 @@ Route::middleware(['auth'])->group(function () {
             'update' => 'dashboard.categories.update',
             'destroy' => 'dashboard.categories.destroy',
         ]);
-
     });
+
+    Route::resource('/dashboard/mahasiswa', MahasiswaController::class)->names([
+        'index' => 'dashboard.mahasiswa.index',
+        'create' => 'dashboard.mahasiswa.create',
+        'store' => 'dashboard.mahasiswa.store',
+        'show' => 'dashboard.mahasiswa.show',
+        'edit' => 'dashboard.mahasiswa.edit',
+        'update' => 'dashboard.mahasiswa.update',
+        'destroy' => 'dashboard.mahasiswa.destroy',
+    ]);
 });
-
-// Tempat Menyimpan Codingan Route Lama
-
-// Post
-// Route::get('/posts', function () {
-
-//     return view('posts', [
-//         'title' => 'Posts',
-//         'posts' => Post::all(),
-//     ]);
-// });
-
-// Post Detail
-// Route::get('/posts/{slug}', function ($slug) {
-
-//     return view('post', [
-//         'title' => 'Post Detail',
-//         'posts' => Post::find($slug),
-//     ]);
-// })->name('post');

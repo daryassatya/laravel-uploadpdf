@@ -15,6 +15,13 @@
                     My Posts
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('dashboard/mahasiswa*') ? 'active' : '' }}"
+                    href="{{ route('dashboard.mahasiswa.index') }}">
+                    <span data-feather="file-text"></span>
+                    Mahasiswa
+                </a>
+            </li>
         </ul>
 
         @can('admin')
