@@ -44,14 +44,14 @@ class MahasiswaController extends Controller
         //
         // dd($request->file('image')->getClientOriginalName());
         $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'nama' => 'required|max:255',
             'tgl_lahir' => 'required|date',
             'program_studi' => 'required|max:255',
             'nim' => 'required|max:255',
             'alamat' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            "dokumen" => "required|mimes:pdf|max:10000",
         ]);
-        // ddd($request);
 
         try {
             //code...
@@ -63,6 +63,7 @@ class MahasiswaController extends Controller
             $mahasiswa->program_studi = $request->program_studi;
             $mahasiswa->alamat = $request->alamat;
             $mahasiswa->foto = $request->file('image')->storeAs('foto-mahasiswa', $request->file('image')->getClientOriginalName());
+            $mahasiswa->dokumen = $request->file('dokumen')->store('dokumen-mahasiswa');
             // $mahasiswa->foto = $request->file('image')->store('foto-mahasiswa');
             $mahasiswa->save();
 
@@ -114,13 +115,16 @@ class MahasiswaController extends Controller
     public function update(Request $request, $nim)
     {
         $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'nama' => 'required|max:255',
             'tgl_lahir' => 'required|date',
             'program_studi' => 'required|max:255',
             'nim' => 'required|max:255',
             'alamat' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            "dokumen" => "mimes:pdf|max:10000",
         ]);
+
+        // ddd($request->file('dokumen'));
 
         try {
             //code...
@@ -137,6 +141,14 @@ class MahasiswaController extends Controller
                     Storage::delete($mahasiswa->foto);
                 }
                 $mahasiswa->foto = $request->file('image')->storeAs('foto-mahasiswa', $request->file('image')->getClientOriginalName());
+            }
+
+            if ($request->file('dokumen')) {
+                if ($mahasiswa->dokumen) {
+                    // Storage::delete($mahasiswa->dokumen);
+                }
+                $mahasiswa->dokumen = $request->file('dokumen')->store('dokumen-mahasiswa');
+
             }
 
             // $mahasiswa->foto = $request->file('image')->store('foto-mahasiswa');
@@ -164,11 +176,21 @@ class MahasiswaController extends Controller
             if ($mahasiswa->foto) {
                 Storage::delete($mahasiswa->foto);
             }
+            if ($mahasiswa->dokumen) {
+                Storage::delete($mahasiswa->dokumen);
+            }
 
             Mahasiswa::destroy($mahasiswa->id);
             return redirect()->route('dashboard.mahasiswa.index')->with(['success' => "Mahasiswa $mahasiswa->nama has been deleted!"]);
         } catch (\Throwable$th) {
             return redirect()->back()->with(['failed' => $th->getMessage()]);
         }
+    }
+
+    public function openPDF($nim)
+    {
+        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        return Storage::download($mahasiswa->dokumen);
+
     }
 }

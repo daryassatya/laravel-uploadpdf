@@ -25,7 +25,7 @@
                     </div>
                 @enderror
             </div>
-            {{-- <div class="mb-3">
+            <div class="mb-3">
                 <label for="program_studi" class="form-label">Dokumen Mahasiswa</label>
                 <input class="form-control @error('dokumen') is-invalid @enderror" type="file" id="dokumen"
                     name="dokumen">
@@ -34,7 +34,7 @@
                         {{ $message }}
                     </div>
                 @enderror
-            </div> --}}
+            </div>
             <div class="mb-3">
                 <label for="nama" class="form-label">Nama</label>
                 <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"

@@ -127,4 +127,6 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'dashboard.mahasiswa.update',
         'destroy' => 'dashboard.mahasiswa.destroy',
     ]);
+    Route::get('/dashboard/mahasiswa/dokumen/{nim}', [MahasiswaController::class, 'openPDF'])->name('dashboard.mahasiswa.dokumen');
+
 });

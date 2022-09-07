@@ -27,6 +27,18 @@
                 @enderror
             </div>
             <div class="mb-3">
+                <label for="program_studi" class="form-label">Dokumen Mahasiswa : {{ $mahasiswa->dokumen }}</label>
+                <a href="{{ asset('storage/' . $mahasiswa->dokumen) }}" class="btn btn-success btn-rounded"><i
+                        class="fa fa-download"></i> Print</a>
+                <input class="form-control @error('dokumen') is-invalid @enderror" type="file" id="dokumen"
+                    name="dokumen">
+                @error('program_studi')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+            <div class="mb-3">
                 <label for="nama" class="form-label">Nama</label>
                 <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
                     value="{{ $mahasiswa->nama }}" required>
