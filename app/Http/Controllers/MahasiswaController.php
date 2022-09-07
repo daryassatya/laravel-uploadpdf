@@ -42,7 +42,7 @@ class MahasiswaController extends Controller
     public function store(Request $request)
     {
         //
-
+        // dd($request->file('image')->getClientOriginalName());
         $request->validate([
             'nama' => 'required|max:255',
             'tgl_lahir' => 'required|date',
@@ -62,7 +62,8 @@ class MahasiswaController extends Controller
             $mahasiswa->nim = $request->nim;
             $mahasiswa->program_studi = $request->program_studi;
             $mahasiswa->alamat = $request->alamat;
-            $mahasiswa->foto = $request->file('image')->store('foto-mahasiswa');
+            $mahasiswa->foto = $request->file('image')->storeAs('foto-mahasiswa', $request->file('image')->getClientOriginalName());
+            // $mahasiswa->foto = $request->file('image')->store('foto-mahasiswa');
             $mahasiswa->save();
 
             return redirect()->route('dashboard.mahasiswa.index')->with(['success' => 'Mahasiswa added successfully!']);
@@ -79,9 +80,13 @@ class MahasiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($nim)
     {
-        //
+        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        return view('dashboard.mahasiswa.show', [
+            'title' => 'Mahasiswa | ' . $mahasiswa->nama,
+            'mahasiswa' => $mahasiswa,
+        ]);
     }
 
     /**
@@ -90,9 +95,13 @@ class MahasiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($nim)
     {
-        //
+        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        return view('dashboard.mahasiswa.edit', [
+            'title' => 'Edit | ' . $mahasiswa->nama,
+            'mahasiswa' => $mahasiswa,
+        ]);
     }
 
     /**
@@ -102,9 +111,44 @@ class MahasiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $nim)
     {
-        //
+        $request->validate([
+            'nama' => 'required|max:255',
+            'tgl_lahir' => 'required|date',
+            'program_studi' => 'required|max:255',
+            'nim' => 'required|max:255',
+            'alamat' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+        ]);
+
+        try {
+            //code...
+
+            $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+            $mahasiswa->nama = $request->nama;
+            $mahasiswa->tgl_lahir = $request->tgl_lahir;
+            $mahasiswa->nim = $request->nim;
+            $mahasiswa->program_studi = $request->program_studi;
+            $mahasiswa->alamat = $request->alamat;
+
+            if ($request->file('image')) {
+                if ($mahasiswa->foto) {
+                    Storage::delete($mahasiswa->foto);
+                }
+                $mahasiswa->foto = $request->file('image')->storeAs('foto-mahasiswa', $request->file('image')->getClientOriginalName());
+            }
+
+            // $mahasiswa->foto = $request->file('image')->store('foto-mahasiswa');
+            $mahasiswa->save();
+
+            return redirect()->route('dashboard.mahasiswa.index')->with(['success' => 'Mahasiswa edited successfully!']);
+
+        } catch (\Throwable$th) {
+            //throw $th;
+            return redirect()->route('dashboard.mahasiswa.index')->with(['failed' => $th->getMessage()]);
+        }
+
     }
 
     /**
