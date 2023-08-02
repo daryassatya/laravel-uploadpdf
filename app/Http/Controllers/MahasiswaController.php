@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
 class MahasiswaController extends Controller
@@ -55,14 +56,14 @@ class MahasiswaController extends Controller
 
         try {
             //code...
-
             $mahasiswa = new Mahasiswa();
             $mahasiswa->nama = $request->nama;
             $mahasiswa->tgl_lahir = $request->tgl_lahir;
             $mahasiswa->nim = $request->nim;
             $mahasiswa->program_studi = $request->program_studi;
             $mahasiswa->alamat = $request->alamat;
-            $mahasiswa->foto = $request->file('image')->storeAs('foto-mahasiswa', $request->file('image')->getClientOriginalName());
+
+            $mahasiswa->foto = $request->file('image')->storeAs('foto-mahasiswa', Crypt::encryptString($request->file('image')->getClientOriginalName()));
             $mahasiswa->dokumen = $request->file('dokumen')->store('dokumen-mahasiswa');
             // $mahasiswa->foto = $request->file('image')->store('foto-mahasiswa');
             $mahasiswa->save();
@@ -71,6 +72,12 @@ class MahasiswaController extends Controller
 
         } catch (\Throwable$th) {
             //throw $th;
+            if ($mahasiswa->foto) {
+                Storage::delete($mahasiswa->foto);
+            }
+            if ($mahasiswa->dokumen) {
+                Storage::delete($mahasiswa->dokumen);
+            }
             return redirect()->route('dashboard.mahasiswa.index')->with(['failed' => $th->getMessage()]);
         }
     }
@@ -84,9 +91,11 @@ class MahasiswaController extends Controller
     public function show($nim)
     {
         $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        dd(Crypt::decryptString(substr($mahasiswa->foto, 15)));
         return view('dashboard.mahasiswa.show', [
             'title' => 'Mahasiswa | ' . $mahasiswa->nama,
             'mahasiswa' => $mahasiswa,
+            'fotoName' => Crypt::decryptString($mahasiswa->foto)
         ]);
     }
 
@@ -191,6 +200,5 @@ class MahasiswaController extends Controller
     {
         $mahasiswa = Mahasiswa::where('nim', $nim)->first();
         return Storage::download($mahasiswa->dokumen);
-
     }
 }

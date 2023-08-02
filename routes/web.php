@@ -107,7 +107,7 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
     // Middleware Pengecekan ADMIN
-    Route::middleware(['is-admin'])->group(function () {
+Route::middleware(['is-admin'])->group(function () {
         Route::resource('/dashboard/categories', AdminCategoryController::class)->names([
             'index' => 'dashboard.categories.index',
             'create' => 'dashboard.categories.create',
