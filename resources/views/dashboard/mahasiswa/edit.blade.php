@@ -17,7 +17,7 @@
             <div class="mb-3">
                 <label for="image" class="form-label">Foto</label>
                 <img class="img-preview img-fluid mb-3 d-block"
-                    @if ($mahasiswa->foto) src="{{ asset('storage/' . $mahasiswa->foto) }}" @endif>
+                    @if ($mahasiswa->foto) src="{{ asset('storage/foto-mahasiswa/' . $fotoPath) }}" @endif>
                 <input class="form-control @error('image') is-invalid @enderror" type="file" id="image"
                     name="image">
                 @error('image')

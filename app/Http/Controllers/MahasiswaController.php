@@ -63,7 +63,7 @@ class MahasiswaController extends Controller
             $mahasiswa->program_studi = $request->program_studi;
             $mahasiswa->alamat = $request->alamat;
 
-            $mahasiswa->foto = $request->file('image')->storeAs('foto-mahasiswa', Crypt::encryptString($request->file('image')->getClientOriginalName()));
+            $mahasiswa->foto = $request->file('image')->storeAs('public/foto-mahasiswa', Crypt::encryptString($request->file('image')->getClientOriginalName()));
             $mahasiswa->dokumen = $request->file('dokumen')->store('dokumen-mahasiswa');
             // $mahasiswa->foto = $request->file('image')->store('foto-mahasiswa');
             $mahasiswa->save();
@@ -91,11 +91,11 @@ class MahasiswaController extends Controller
     public function show($nim)
     {
         $mahasiswa = Mahasiswa::where('nim', $nim)->first();
-        dd(Crypt::decryptString(substr($mahasiswa->foto, 15)));
         return view('dashboard.mahasiswa.show', [
             'title' => 'Mahasiswa | ' . $mahasiswa->nama,
             'mahasiswa' => $mahasiswa,
-            'fotoName' => Crypt::decryptString($mahasiswa->foto)
+            'fotoName' => Crypt::decryptString(substr($mahasiswa->foto, 22)),
+            'fotoPath' => substr($mahasiswa->foto, 22)
         ]);
     }
 
@@ -108,9 +108,12 @@ class MahasiswaController extends Controller
     public function edit($nim)
     {
         $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        // dd(substr($mahasiswa->foto, 7));
         return view('dashboard.mahasiswa.edit', [
             'title' => 'Edit | ' . $mahasiswa->nama,
             'mahasiswa' => $mahasiswa,
+            'fotoName' => Crypt::decryptString(substr($mahasiswa->foto, 22)),
+            'fotoPath' => substr($mahasiswa->foto, 22)
         ]);
     }
 

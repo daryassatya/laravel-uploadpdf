@@ -16,9 +16,10 @@
                 </form>
 
                 <div style="max-height: 350px; overflow:hidden">
-                    <img src="{{ asset('storage/' . $mahasiswa->foto) }}" alt="{{ $mahasiswa->foto }}"
+                    <img src="{{ asset('storage/foto-mahasiswa/' . $fotoPath) }}" alt="{{ $mahasiswa->foto }}"
                         class="img-fluid mt-3">
-                </div>
+                    </div>
+                    <p class="mt-2">{{ $fotoName }}</p>
 
                 <article class="my-3 fs-5">{!! $mahasiswa->alamat !!}</article>
                 <p>{{ substr($mahasiswa->foto, 15) }}</p>
