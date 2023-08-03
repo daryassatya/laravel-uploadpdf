@@ -108,7 +108,6 @@ class MahasiswaController extends Controller
     public function edit($nim)
     {
         $mahasiswa = Mahasiswa::where('nim', $nim)->first();
-        // dd(substr($mahasiswa->foto, 7));
         return view('dashboard.mahasiswa.edit', [
             'title' => 'Edit | ' . $mahasiswa->nama,
             'mahasiswa' => $mahasiswa,
@@ -152,7 +151,7 @@ class MahasiswaController extends Controller
                 if ($mahasiswa->foto) {
                     Storage::delete($mahasiswa->foto);
                 }
-                $mahasiswa->foto = $request->file('image')->storeAs('foto-mahasiswa', $request->file('image')->getClientOriginalName());
+                $mahasiswa->foto = $request->file('image')->storeAs('public/foto-mahasiswa', Crypt::encryptString($request->file('image')->getClientOriginalName()));
             }
 
             if ($request->file('dokumen')) {
